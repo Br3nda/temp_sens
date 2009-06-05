@@ -5,7 +5,7 @@ CC=avr-gcc
 OBJCOPY=avr-objcopy
 # optimize for size:
 CFLAGS=-g -mmcu=$(MCU) -Wall -Wstrict-prototypes -Os -mcall-prologues
-TARGET=serial_test
+TARGET=sensor
 PROGRAMMER=avrusb500
 MICRO=m8
 #-------------------
@@ -19,7 +19,7 @@ help:
 #-------------------
 %.hex: %.out
 	$(OBJCOPY) -R .eeprom -O ihex $< $@
-serial_test.out: serial_test.o buffer.o uart.o rprintf.o parser.o
+sensor.out: sensor.o humtempsens.o buffer.o uart.o rprintf.o parser.o
 	$(CC) $(CFLAGS) -o $@ -Wl $^
 %.o: %.c
 	$(CC) $(CFLAGS) -Os -c $<

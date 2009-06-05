@@ -2,33 +2,16 @@
 #include "parser.h"
 
 #include "rprintf.h"
+#include "sensor.h"
 
-char thingBuffer[50];
-uint8_t thingBufferCount;
 uint8_t numericVal;
 
 %%{
   machine test_parser;
   
-  action RecordThing {
-    thingBuffer[thingBufferCount++] = *p;
-  }
-  
-  action GiveThing {
-    thingBuffer[thingBufferCount++] = 0;
-    rprintf("I has a ");
-    rprintfStr(thingBuffer);
-    rprintfChar('\n');
-    thingBufferCount = 0;
-  }
-  
   action HandleError {
-    rprintf("Oh nose no sense %d!\n", cs);
+    rprintf("Invalid input in state %d!\n", cs);
     fgoto main;
-  }
-  
-  action ShowState {
-    rprintf("State %d\n", cs);
   }
   
   action ReadHex {
@@ -39,15 +22,15 @@ uint8_t numericVal;
     PORTC = numericVal;
   }
   
-  gimmeh =
-    (
-      'GIMMEH '
-      ((any $RecordThing)* :> '\n')
-    ) @GiveThing;
+  action GetData {
+    send_data();
+  }
+  
+  get_data = 'FETCH\n' @GetData;
   
   output = ('OUT C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetOut;
   
-  command = gimmeh | output | '\n';
+  command = get_data | output | '\n';
   
   main := (command $!HandleError)*;
 }%%
@@ -57,7 +40,6 @@ uint8_t numericVal;
 int cs;
 
 void parser_init( void ) {
-  thingBufferCount = 0;
   %% write init;
 }
 

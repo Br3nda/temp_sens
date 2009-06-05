@@ -1,9 +1,10 @@
 #include "global.h"
 
-#include <util/delay.h>
 #include "uart.h"
 #include "rprintf.h"
 #include "parser.h"
+#include "sensor.h"
+#include "humtempsens.h"
 
 /* new style */
 int main(void)
@@ -13,6 +14,7 @@ int main(void)
   rprintfInit(uartSendByte);  // configure rprintf to use UART for output
   
   parser_init();
+  humtempsens_init();
   
   DDRC |= (1<<PC0 | 1<<PC1 | 1<<PC2 | 1<<PC3 | 1<<PC4 | 1<<PC5);
   PORTC = 0;
@@ -36,4 +38,21 @@ int main(void)
     
   }
   return(0);
+}
+
+void send_data( void ) {
+  humtempdata data = get_hum_temp();
+  
+  if (data.temperature >= 0) {
+    rprintf("T ");
+    rprintfu16(data.temperature);
+    rprintfChar('\n');
+  }
+  
+  if (data.humidity >= 0) {
+    rprintf("H ");
+    rprintfu16(data.humidity);
+    rprintfChar('\n');
+  }
+  
 }
