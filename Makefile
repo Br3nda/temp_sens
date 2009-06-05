@@ -9,7 +9,7 @@ TARGET=serial_test
 PROGRAMMER=avrusb500
 MICRO=m8
 #-------------------
-all: ${TARGET}.hex
+all: ${TARGET}.hex parser.ps
 #-------------------
 help: 
 	@echo "Usage: make all|load|load_pre|rdfuses|wrfuse1mhz|wrfuse4mhz|wrfusecrystal"
@@ -19,10 +19,14 @@ help:
 #-------------------
 %.hex: %.out
 	$(OBJCOPY) -R .eeprom -O ihex $< $@
-serial_test.out: serial_test.o buffer.o uart.o rprintf.o
+serial_test.out: serial_test.o buffer.o uart.o rprintf.o parser.o
 	$(CC) $(CFLAGS) -o $@ -Wl $^
 %.o: %.c
 	$(CC) $(CFLAGS) -Os -c $<
+parser.c: parser.rl
+	ragel -G2 -o $@ $<
+parser.ps: parser.rl
+	ragel -Vp $< | dot -Tps -o $@
 #------------------
 load: ${TARGET}.hex
 	avrdude -p ${MICRO} -c ${PROGRAMMER} -e -U flash:w:${TARGET}.hex
@@ -54,5 +58,5 @@ wrfusecrystal:
 	avrdude -p ${MICRO} -c ${PROGRAMMER} -u -v -U hfuse:w:0xd9:m
 #-------------------
 clean:
-	rm -f *.o *.map *.out *t.hex
+	rm -f *.o *.map *.out *t.hex parser.c parser.ps
 #-------------------

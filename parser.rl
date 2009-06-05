@@ -5,6 +5,7 @@
 
 char thingBuffer[50];
 uint8_t thingBufferCount;
+uint8_t numericVal;
 
 %%{
   machine test_parser;
@@ -30,10 +31,25 @@ uint8_t thingBufferCount;
     rprintf("State %d\n", cs);
   }
   
-  command = 'GIMMEH '
-    ((any $RecordThing)* :> '\n');
+  action ReadHex {
+    numericVal = (numericVal << 4) | ((*p >= 'a' ? *p - ('a' - 10) : *p - '0') & 15);
+  }
   
-  main := (command @GiveThing $!HandleError)*;
+  action SetOut {
+    PORTC = numericVal;
+  }
+  
+  gimmeh =
+    (
+      'GIMMEH '
+      ((any $RecordThing)* :> '\n')
+    ) @GiveThing;
+  
+  output = ('OUT C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetOut;
+  
+  command = gimmeh | output | '\n';
+  
+  main := (command $!HandleError)*;
 }%%
 
 %% write data;
