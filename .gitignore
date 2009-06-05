@@ -1,0 +1,6 @@
+*~
+*.o
+*.ps
+*.out
+*.hex
+parser.c
