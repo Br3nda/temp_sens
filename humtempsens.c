@@ -73,7 +73,6 @@ static inline int16_t humtempsens_measure(uint8_t command) {
   for (byte = 0; byte < 2; byte++) {
     for (bit = 0; bit < 8; bit++) {
       SCK_UP();
-      SCK_DOWN();
       val <<= 1;
       uint8_t in = (PIND >> PD7) & 1;
       
@@ -82,6 +81,7 @@ static inline int16_t humtempsens_measure(uint8_t command) {
 //       crc <<= 1;
 //       crc |= txb;
 //       crc ^= ((txb << 4) | (txb << 5));
+      SCK_DOWN();
     }
     
     // Acknowledge
