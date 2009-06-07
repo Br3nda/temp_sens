@@ -22,6 +22,16 @@ uint8_t numericVal;
     PORTC = numericVal;
   }
   
+  action SetMask {
+    DDRC = numericVal;
+  }
+  
+  action ReadPort {
+    rprintf("DATA C ");
+    rprintfu08(PINC);
+    rprintfChar('\n');
+  }
+  
   action GetData {
     send_data();
   }
@@ -29,6 +39,8 @@ uint8_t numericVal;
   get_data = 'FETCH\n' @GetData;
   
   output = ('OUT C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetOut;
+  mask = ('MASK C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetMask;
+  read = 'READ C\n' @ReadPort;
   
   command = get_data | output | '\n';
   
