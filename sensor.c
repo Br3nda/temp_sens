@@ -1,9 +1,10 @@
 #include "global.h"
+#include "sensor.h"
 
 #include "uart.h"
 #include "rprintf.h"
 #include "parser.h"
-#include "sensor.h"
+#include "spi.h"
 #include "humtempsens.h"
 
 /* new style */
@@ -15,6 +16,7 @@ int main(void)
   
   parser_init();
   humtempsens_init();
+  spi_init();
   
   DDRC |= (1<<PC0 | 1<<PC1 | 1<<PC2 | 1<<PC3 | 1<<PC4 | 1<<PC5);
   PORTC = 0;
@@ -55,4 +57,14 @@ void send_data( void ) {
     rprintfChar('\n');
   }
   
+}
+
+void uart2spi( char* buffer, uint16_t length ) {
+  spi_exchange(buffer, length);
+  uint16_t i;
+  rprintf("SPIREPLY ");
+  for (i = 0; i < length; ++i) {
+    rprintfu08(buffer[i]);
+  }
+  rprintfChar('\n');
 }

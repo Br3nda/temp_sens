@@ -19,7 +19,7 @@ help:
 #-------------------
 %.hex: %.out
 	$(OBJCOPY) -R .eeprom -O ihex $< $@
-sensor.out: sensor.o humtempsens.o buffer.o uart.o rprintf.o parser.o
+sensor.out: sensor.o humtempsens.o buffer.o uart.o rprintf.o parser.o spi.o
 	$(CC) $(CFLAGS) -o $@ -Wl $^
 %.o: %.c
 	$(CC) $(CFLAGS) -Os -c $<

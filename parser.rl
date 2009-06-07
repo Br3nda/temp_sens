@@ -5,6 +5,8 @@
 #include "sensor.h"
 
 uint8_t numericVal;
+char dataBuffer[255];
+uint8_t dataLength;
 
 %%{
   machine test_parser;
@@ -36,13 +38,26 @@ uint8_t numericVal;
     send_data();
   }
   
+  action ResetDataBuffer {
+    dataLength = 0;
+  }
+  
+  action AppendDataByte {
+    dataBuffer[dataLength++] = numericVal;
+  }
+  
+  action SpiExchange {
+    uart2spi(dataBuffer, dataLength);
+  }
+  
   get_data = 'FETCH\n' @GetData;
   
   output = ('OUT C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetOut;
   mask = ('MASK C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetMask;
   read = 'READ C\n' @ReadPort;
+  spi = ('SPIXFER ' @ResetDataBuffer (([0-9a-f] @ReadHex [0-9a-f] @ReadHex) @AppendDataByte)* '\n') @SpiExchange;
   
-  command = get_data | output | '\n';
+  command = get_data | output | mask | read | spi | '\n';
   
   main := (command $!HandleError)*;
 }%%
