@@ -55,7 +55,7 @@ uint8_t dataLength;
   output = ('OUT C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetOut;
   mask = ('MASK C ' ([0-9a-f] @ReadHex [0-9a-f] @ReadHex) '\n') @SetMask;
   read = 'READ C\n' @ReadPort;
-  spi = ('SPIXFER ' @ResetDataBuffer (([0-9a-f] @ReadHex [0-9a-f] @ReadHex) @AppendDataByte)* '\n') @SpiExchange;
+  spi = ('SPI ' @ResetDataBuffer (([0-9a-f] @ReadHex [0-9a-f] @ReadHex) @AppendDataByte)* '\n') @SpiExchange;
   
   command = get_data | output | mask | read | spi | '\n';
   
