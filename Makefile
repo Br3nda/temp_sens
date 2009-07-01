@@ -30,6 +30,8 @@ parser.ps: parser.rl
 #------------------
 load: ${TARGET}.hex
 	avrdude -p ${MICRO} -c ${PROGRAMMER} -e -U flash:w:${TARGET}.hex
+loadbl: ${TARGET}.hex
+	avrdude -p ${MICRO} -c stk500v1 -F -e -U flash:w:${TARGET}.hex
 #
 #-------------------
 # fuse byte settings:

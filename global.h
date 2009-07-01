@@ -43,6 +43,4 @@
 // CYCLES_PER_US is used by some short delay loops
 #define CYCLES_PER_US ((F_CPU+500000)/1000000) 	// cpu cycles per microsecond
 
-#define HUMTEMPSENS_DEBUG
-
 #endif

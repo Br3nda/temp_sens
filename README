@@ -1,0 +1,26 @@
+Humidity and temperature sensor interface.
+Interface code is Copyright (C) Timothy Goddard, 2009
+Includes parts of Procyon-AVRLIB, Copyright (C) Pascal Stang 2001-2002
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+To use the example tools with the sensor connected to the first serial port:
+
+./show_data.rb /dev/ttyS0 > humtempsens.log &
+
+To create a web page:
+
+tail -n 1 -f humtempsens.log | ./log2web.rb
+
+You'll probably want to adjust those to include your details!
