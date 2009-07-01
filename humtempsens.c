@@ -43,6 +43,14 @@ static inline int16_t humtempsens_measure(uint8_t command) {
   
     crc = 0;
     
+    DATA_UP();
+    
+    #ifdef HUMTEMPSENS_DEBUG
+    rprintf("PORTD: ");
+    printBin(PIND, 8);
+    rprintfChar('\n');
+    #endif
+    
     // Send command
     humtempsens_command_init();
     uint8_t bit;
@@ -61,8 +69,20 @@ static inline int16_t humtempsens_measure(uint8_t command) {
       command <<= 1;
     }
     
+    #ifdef HUMTEMPSENS_DEBUG
+    rprintf("Checking for chip\n");
+    #endif
+    
     // Check acknowledgement
     DATA_UP();
+    
+    
+    #ifdef HUMTEMPSENS_DEBUG
+    rprintf("PORTD: ");
+    printBin(PIND, 8);
+    rprintfChar('\n');
+    #endif
+    
     if (PIND & (1 << PD7)) {
       rprintf("Failed to receive acknowledgement.\n");
       return -1;
@@ -70,6 +90,13 @@ static inline int16_t humtempsens_measure(uint8_t command) {
     
     SCK_UP();
     SCK_DOWN();
+    
+    
+    #ifdef HUMTEMPSENS_DEBUG
+    rprintf("PORTD: ");
+    printBin(PIND, 8);
+    rprintfChar('\n');
+    #endif
     
     // Wait for data ready
     while (PIND & (1 << PD7)) {}
@@ -97,6 +124,12 @@ static inline int16_t humtempsens_measure(uint8_t command) {
       SCK_DOWN();
       DATA_UP();
     }
+    
+    #ifdef HUMTEMPSENS_DEBUG
+    rprintf("Received: ");
+    printBin(val, 16);
+    rprintfChar('\n');
+    #endif
 
     // Retrieve checksum
     checksum = 0;
@@ -109,6 +142,15 @@ static inline int16_t humtempsens_measure(uint8_t command) {
       SCK_UP();
       SCK_DOWN();
     }
+    
+    #ifdef HUMTEMPSENS_DEBUG
+    rprintf("Calculated: ");
+    printBin(crc, 8);
+    rprintfChar('\n');
+    rprintf("Received: ");
+    printBin(checksum, 8);
+    rprintfChar('\n');
+    #endif
     
     if (checksum != crc) humtempsens_init();
   } while (checksum != crc);

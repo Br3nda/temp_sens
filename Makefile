@@ -56,6 +56,12 @@ wrfusecrystal:
 	@sleep 3
 	avrdude -p ${MICRO} -c ${PROGRAMMER} -u -v -U lfuse:w:0xee:m
 	avrdude -p ${MICRO} -c ${PROGRAMMER} -u -v -U hfuse:w:0xd9:m
+wrfusebootloader:
+	@echo "Warning: The external crystal setting can not be changed back without a working crystal"
+	@echo "         You have 3 seconds to abort this with crtl-c"
+	@sleep 3
+	avrdude -p ${MICRO} -c ${PROGRAMMER} -u -v -U lfuse:w:0xee:m
+	avrdude -p ${MICRO} -c ${PROGRAMMER} -u -v -U hfuse:w:0xd8:m
 #-------------------
 clean:
 	rm -f *.o *.map *.out *t.hex parser.c parser.ps
