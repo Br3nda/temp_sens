@@ -1,6 +1,11 @@
 Humidity and temperature sensor interface.
+
 Interface code is Copyright (C) Timothy Goddard, 2009
+
 Includes parts of Procyon-AVRLIB, Copyright (C) Pascal Stang 2001-2002
+
+Datasheets included in the datasheets directory are not covered by the same licence
+as the code. Please see individual datasheets for copyright and licence information.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
